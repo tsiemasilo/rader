@@ -1,9 +1,9 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { UserLocation } from '../types';
 
-const HIGH_ACCURACY_THRESHOLD = 30;
-const POSITION_TIMEOUT = 60000;
-const MAX_WAIT_TIME = 60000;
+const GOOD_ACCURACY_THRESHOLD = 50;
+const POSITION_TIMEOUT = 30000;
+const MAX_WAIT_TIME = 15000;
 
 export function useGeolocation() {
   const [location, setLocation] = useState<UserLocation | null>(null);
@@ -13,7 +13,7 @@ export function useGeolocation() {
   
   const timeoutRef = useRef<number | null>(null);
   const watchIdRef = useRef<number | null>(null);
-  const bestAccuracySeen = useRef<number>(Infinity);
+  const hasReceivedLocation = useRef<boolean>(false);
 
   const stopTracking = useCallback(() => {
     if (watchIdRef.current !== null) {
@@ -38,13 +38,13 @@ export function useGeolocation() {
     setIsTracking(true);
     setError(null);
     setAccuracyWarning('Acquiring GPS lock... Please wait for accurate position.');
-    bestAccuracySeen.current = Infinity;
+    hasReceivedLocation.current = false;
 
     timeoutRef.current = setTimeout(() => {
-      if (!location) {
-        setError('Unable to get accurate GPS location. Please ensure GPS is enabled and you are outdoors for best results.');
-        setIsTracking(false);
+      if (!hasReceivedLocation.current) {
+        setError('Unable to get your location. Please ensure location access is enabled in your browser settings.');
         setAccuracyWarning(null);
+        stopTracking();
       }
     }, MAX_WAIT_TIME);
 
@@ -52,29 +52,29 @@ export function useGeolocation() {
       (position) => {
         const { latitude, longitude, accuracy, heading, speed } = position.coords;
         
-        bestAccuracySeen.current = Math.min(bestAccuracySeen.current, accuracy);
+        const newLocation: UserLocation = {
+          latitude,
+          longitude,
+          accuracy,
+          heading: heading ?? undefined,
+          speed: speed ?? undefined,
+        };
 
-        if (accuracy <= HIGH_ACCURACY_THRESHOLD) {
-          const newLocation: UserLocation = {
-            latitude,
-            longitude,
-            accuracy,
-            heading: heading ?? undefined,
-            speed: speed ?? undefined,
-          };
+        setLocation(newLocation);
+        setError(null);
+        hasReceivedLocation.current = true;
+        
+        if (timeoutRef.current) {
+          clearTimeout(timeoutRef.current);
+          timeoutRef.current = null;
+        }
 
-          setLocation(newLocation);
-          setError(null);
-          setAccuracyWarning(null);
-          
-          if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-            timeoutRef.current = null;
-          }
-        } else {
+        if (accuracy > GOOD_ACCURACY_THRESHOLD) {
           setAccuracyWarning(
-            `GPS accuracy: ${Math.round(accuracy)}m (best: ${Math.round(bestAccuracySeen.current)}m). Waiting for better signal...`
+            `GPS accuracy: ±${Math.round(accuracy)}m. Signal may improve outdoors.`
           );
+        } else {
+          setAccuracyWarning(null);
         }
       },
       (err) => {
@@ -89,7 +89,7 @@ export function useGeolocation() {
             errorMessage += 'Please allow location access in your browser settings.';
             break;
           case err.POSITION_UNAVAILABLE:
-            errorMessage += 'Location information is unavailable. Please ensure GPS is enabled.';
+            errorMessage += 'Location information is unavailable. Please check your device settings.';
             break;
           default:
             errorMessage += err.message;
@@ -109,7 +109,7 @@ export function useGeolocation() {
         timeout: POSITION_TIMEOUT,
       }
     );
-  }, [stopTracking, location]);
+  }, [stopTracking]);
 
   const requestLocation = useCallback(() => {
     startTracking();
