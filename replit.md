@@ -4,6 +4,13 @@
 A responsive web application for detecting police, speed cameras, and roadblocks while driving. Built with React, TypeScript, and Leaflet.js, featuring real-time GPS tracking, proximity alerts, and a radar scanner UI mode.
 
 ## Recent Changes
+- **2025-11-05**: Geolocation improvements, dark theme, and Netlify deployment setup
+  - Enhanced geolocation error handling with specific permission-denied messages
+  - Extended geolocation timeout from 15s to 20s for better GPS acquisition
+  - Applied dark theme map styling using CartoDB Dark tile provider
+  - Created Netlify deployment configuration (netlify.toml and _redirects)
+  - Configured SPA routing for Netlify with proper redirects
+  
 - **2025-11-05**: Live scanning mode update
   - Converted to live GPS scanning (removed user reporting system)
   - Upgraded to Google Maps-style clean tiles (CARTO Voyager)
@@ -34,7 +41,7 @@ A responsive web application for detecting police, speed cameras, and roadblocks
 - **Storage**: Browser localStorage
 
 ### Key Components
-1. **MapView**: Interactive map with Google Maps-style tiles, showing user location (car icon) and permanent threat markers with radius zones
+1. **MapView**: Interactive map with dark-themed tiles, showing user location (car icon) and permanent threat markers with radius zones
 2. **RadarView**: Animated radar scanner with proximity detection
 3. **ControlPanel**: Status display with live scanning mode and radar toggle
 
@@ -58,6 +65,7 @@ A responsive web application for detecting police, speed cameras, and roadblocks
 - **Type**: Autoscale (stateless web app)
 - **Build**: `npm run build`
 - **Run**: Vite preview server on port 5000
+- **Netlify**: Configured with netlify.toml and _redirects for SPA routing
 
 ## Development Workflow
 
