@@ -1,15 +1,26 @@
 import { useEffect, useState } from 'react';
-import { ProximityAlert } from '../types';
+import { MapContainer, TileLayer, Marker, Circle } from 'react-leaflet';
+import L from 'leaflet';
+import { ProximityAlert, UserLocation } from '../types';
 import { formatDistance } from '../utils/geolocation';
 import { audioManager } from '../utils/audio';
+import 'leaflet/dist/leaflet.css';
 import './RadarView.css';
+
+const carIcon = L.divIcon({
+  className: 'custom-car-icon',
+  html: `<div style="font-size: 30px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));">🚗</div>`,
+  iconSize: [30, 30],
+  iconAnchor: [15, 15],
+});
 
 interface RadarViewProps {
   alerts: ProximityAlert[];
   closestAlert: ProximityAlert | null;
+  userLocation: UserLocation | null;
 }
 
-export function RadarView({ alerts, closestAlert }: RadarViewProps) {
+export function RadarView({ alerts, closestAlert, userLocation }: RadarViewProps) {
   const [scanAngle, setScanAngle] = useState(0);
 
   useEffect(() => {
@@ -38,8 +49,40 @@ export function RadarView({ alerts, closestAlert }: RadarViewProps) {
     };
   };
 
+  const center: [number, number] = userLocation
+    ? [userLocation.latitude, userLocation.longitude]
+    : [-26.2041, 28.0473];
+
   return (
     <div className="radar-container">
+      {userLocation && (
+        <div className="radar-map-background">
+          <MapContainer
+            center={center}
+            zoom={15}
+            style={{ height: '100%', width: '100%' }}
+            zoomControl={false}
+            dragging={false}
+            scrollWheelZoom={false}
+            doubleClickZoom={false}
+            touchZoom={false}
+            keyboard={false}
+            attributionControl={false}
+          >
+            <TileLayer
+              url="https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png"
+              maxZoom={20}
+              opacity={0.3}
+            />
+            <Marker position={center} icon={carIcon} />
+            <Circle
+              center={center}
+              radius={userLocation.accuracy}
+              pathOptions={{ color: '#4285F4', fillColor: '#4285F4', fillOpacity: 0.15, weight: 2 }}
+            />
+          </MapContainer>
+        </div>
+      )}
       <svg className="radar-svg" viewBox="0 0 300 300">
         <circle cx="150" cy="150" r="140" fill="none" stroke="#00ff00" strokeWidth="1" opacity="0.3" />
         <circle cx="150" cy="150" r="100" fill="none" stroke="#00ff00" strokeWidth="1" opacity="0.3" />

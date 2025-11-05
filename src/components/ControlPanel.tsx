@@ -9,6 +9,9 @@ interface ControlPanelProps {
   onToggleRadar: () => void;
   locationError: string | null;
   accuracyWarning: string | null;
+  onRequestLocation: () => void;
+  theme: 'light' | 'dark';
+  onToggleTheme: () => void;
 }
 
 export function ControlPanel({
@@ -18,6 +21,9 @@ export function ControlPanel({
   onToggleRadar,
   locationError,
   accuracyWarning,
+  onRequestLocation,
+  theme,
+  onToggleTheme,
 }: ControlPanelProps) {
   return (
     <div className="control-panel">
@@ -43,6 +49,23 @@ export function ControlPanel({
         >
           {isRadarMode ? '🗺️ MAP VIEW' : '📡 RADAR VIEW'}
         </button>
+        {!isRadarMode && (
+          <button 
+            className="theme-toggle"
+            onClick={onToggleTheme}
+            title={theme === 'dark' ? 'Switch to Light Mode' : 'Switch to Dark Mode'}
+          >
+            {theme === 'dark' ? '☀️ LIGHT' : '🌙 DARK'}
+          </button>
+        )}
+        {locationError && (
+          <button 
+            className="location-request-btn"
+            onClick={onRequestLocation}
+          >
+            📍 REQUEST LOCATION
+          </button>
+        )}
       </div>
 
       {alerts.length > 0 && !isRadarMode && (

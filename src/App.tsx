@@ -12,26 +12,38 @@ import './App.css';
 function App() {
   const [isRadarMode, setIsRadarMode] = useState(false);
   const [policeLocations, setPoliceLocations] = useState<PoliceLocation[]>([]);
+  const [theme, setTheme] = useState<'light' | 'dark'>(() => {
+    const savedTheme = localStorage.getItem('mapTheme');
+    return (savedTheme === 'light' || savedTheme === 'dark') ? savedTheme : 'dark';
+  });
   
-  const { location, error: locationError, accuracyWarning } = useGeolocation();
+  const { location, error: locationError, accuracyWarning, requestLocation } = useGeolocation();
   const { alerts, closestAlert } = useProximityAlerts(location, policeLocations);
 
   useEffect(() => {
     setPoliceLocations(getStoredLocations());
   }, []);
 
+  useEffect(() => {
+    localStorage.setItem('mapTheme', theme);
+  }, [theme]);
+
   const handleToggleRadar = () => {
     audioManager.initializeAudio();
     setIsRadarMode(!isRadarMode);
+  };
+
+  const handleToggleTheme = () => {
+    setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
   };
 
   return (
     <div className="app">
       <div className="view-container">
         {isRadarMode ? (
-          <RadarView alerts={alerts} closestAlert={closestAlert} />
+          <RadarView alerts={alerts} closestAlert={closestAlert} userLocation={location} />
         ) : (
-          <MapView userLocation={location} policeLocations={policeLocations} />
+          <MapView userLocation={location} policeLocations={policeLocations} theme={theme} />
         )}
       </div>
 
@@ -42,6 +54,9 @@ function App() {
         onToggleRadar={handleToggleRadar}
         locationError={locationError}
         accuracyWarning={accuracyWarning}
+        onRequestLocation={requestLocation}
+        theme={theme}
+        onToggleTheme={handleToggleTheme}
       />
     </div>
   );

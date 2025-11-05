@@ -65,12 +65,17 @@ function MapUpdater({ center }: { center: [number, number] }) {
 interface MapViewProps {
   userLocation: UserLocation | null;
   policeLocations: PoliceLocation[];
+  theme?: 'light' | 'dark';
 }
 
-export function MapView({ userLocation, policeLocations }: MapViewProps) {
+export function MapView({ userLocation, policeLocations, theme = 'dark' }: MapViewProps) {
   const center: [number, number] = userLocation
     ? [userLocation.latitude, userLocation.longitude]
-    : [40.7589, -73.9851];
+    : [-26.2041, 28.0473];
+
+  const tileUrl = theme === 'light'
+    ? 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
+    : 'https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png';
 
   return (
     <MapContainer
@@ -80,8 +85,9 @@ export function MapView({ userLocation, policeLocations }: MapViewProps) {
       zoomControl={true}
     >
       <TileLayer
+        key={theme}
         attribution='&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
-        url="https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png"
+        url={tileUrl}
         maxZoom={20}
       />
       

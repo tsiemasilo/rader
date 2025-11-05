@@ -13,6 +13,19 @@ export function useGeolocation() {
   
   const bestFixRef = useRef<UserLocation | null>(null);
   const timeoutRef = useRef<number | null>(null);
+  const watchIdRef = useRef<number | null>(null);
+
+  const stopTracking = useCallback(() => {
+    if (watchIdRef.current !== null) {
+      navigator.geolocation.clearWatch(watchIdRef.current);
+      watchIdRef.current = null;
+    }
+    if (timeoutRef.current) {
+      clearTimeout(timeoutRef.current);
+      timeoutRef.current = null;
+    }
+    setIsTracking(false);
+  }, []);
 
   const startTracking = useCallback(() => {
     if (!('geolocation' in navigator)) {
@@ -20,12 +33,14 @@ export function useGeolocation() {
       return;
     }
 
+    stopTracking();
+
     setIsTracking(true);
     setError(null);
     bestFixRef.current = null;
 
     timeoutRef.current = setTimeout(() => {
-      if (bestFixRef.current && !location) {
+      if (bestFixRef.current) {
         setLocation(bestFixRef.current);
         if (bestFixRef.current.accuracy > PREFERRED_ACCURACY) {
           setAccuracyWarning(`GPS accuracy is ${Math.round(bestFixRef.current.accuracy)}m. Location may be approximate.`);
@@ -36,7 +51,7 @@ export function useGeolocation() {
       }
     }, TIMEOUT_MS);
 
-    const watchId = navigator.geolocation.watchPosition(
+    watchIdRef.current = navigator.geolocation.watchPosition(
       (position) => {
         const { latitude, longitude, accuracy, heading, speed } = position.coords;
         
@@ -100,25 +115,18 @@ export function useGeolocation() {
         timeout: 20000,
       }
     );
+  }, [stopTracking]);
 
-    return () => {
-      navigator.geolocation.clearWatch(watchId);
-      setIsTracking(false);
-      if (timeoutRef.current) {
-        clearTimeout(timeoutRef.current);
-        timeoutRef.current = null;
-      }
-    };
-  }, [location]);
-
-  const stopTracking = useCallback(() => {
-    setIsTracking(false);
-  }, []);
-
-  useEffect(() => {
-    const cleanup = startTracking();
-    return cleanup;
+  const requestLocation = useCallback(() => {
+    startTracking();
   }, [startTracking]);
 
-  return { location, error, isTracking, accuracyWarning, startTracking, stopTracking };
+  useEffect(() => {
+    startTracking();
+    return () => {
+      stopTracking();
+    };
+  }, [startTracking, stopTracking]);
+
+  return { location, error, isTracking, accuracyWarning, requestLocation };
 }
