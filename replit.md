@@ -4,6 +4,18 @@
 A responsive web application for detecting police, speed cameras, and roadblocks while driving. Built with React, TypeScript, and Leaflet.js, featuring real-time GPS tracking, proximity alerts, and a radar scanner UI mode.
 
 ## Recent Changes
+- **2025-11-05**: GPS Location Accuracy Fix - No More Default Location Jumps
+  - **Problem Fixed**: App was showing default Johannesburg location before GPS acquired, then jumping to real location
+  - **Solution**: Map no longer renders until actual GPS coordinates are obtained
+    - Removed default fallback center location completely from MapView and RadarView
+    - GPS loading overlay displays until real coordinates arrive
+    - When GPS acquires location, map appears directly at correct position
+    - No more confusing location jumps or showing wrong position first
+  - **Dark Mode Map Enhancement**: Fixed dark mode map showing only gray background with no streets
+    - Changed tileset from 'dark_matter' (minimal) back to 'dark_all' (full-featured)
+    - Map now properly displays all streets, roads, labels, and landmarks in dark mode
+    - Dark aesthetic maintained while ensuring full map visibility
+  
 - **2025-11-05**: GPS Accuracy and Map Visibility Improvements
   - **GPS High-Accuracy Positioning**: Significantly improved GPS accuracy by filtering out low-accuracy readings
     - Reduced PREFERRED_ACCURACY from 100m to 50m for more precise location tracking
@@ -11,10 +23,6 @@ A responsive web application for detecting police, speed cameras, and roadblocks
     - Extended position timeout from 15s to 20s and fallback timeout to 25s for better GPS acquisition
     - Added smart filtering: only updates location when accuracy improves, preventing jumps to less accurate positions
     - Users now see "GPS accuracy is XXm. Improving..." message while GPS fine-tunes the location
-  - **Dark Mode Map Visibility**: Changed dark mode tileset from 'dark_all' to 'dark_matter' for better visibility
-    - Map now uses lighter, more visible grayscale tiles in dark mode
-    - Maintains sleek dark aesthetic while improving readability of streets and landmarks
-    - Applies to both Map View and Radar View background
   - **Radar View Theme Switching**: Fixed theme toggle not working in Radar mode
     - RadarView now properly receives and applies theme prop
     - Map background in Radar mode now switches between light and dark tiles correctly
