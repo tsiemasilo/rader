@@ -43,7 +43,7 @@ function App() {
         {isRadarMode ? (
           <RadarView alerts={alerts} closestAlert={closestAlert} userLocation={location} />
         ) : (
-          <MapView userLocation={location} policeLocations={policeLocations} theme={theme} />
+          <MapView userLocation={location} policeLocations={policeLocations} alerts={alerts} theme={theme} />
         )}
       </div>
 

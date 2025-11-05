@@ -1,8 +1,10 @@
 import { useEffect } from 'react';
 import { MapContainer, TileLayer, Marker, Popup, Circle, useMap } from 'react-leaflet';
 import L from 'leaflet';
-import { UserLocation, PoliceLocation } from '../types';
+import { UserLocation, PoliceLocation, ProximityAlert } from '../types';
+import { ThreatsSidebar } from './ThreatsSidebar';
 import 'leaflet/dist/leaflet.css';
+import './MapView.css';
 
 const carIcon = L.divIcon({
   className: 'custom-car-icon',
@@ -65,10 +67,11 @@ function MapUpdater({ center }: { center: [number, number] }) {
 interface MapViewProps {
   userLocation: UserLocation | null;
   policeLocations: PoliceLocation[];
+  alerts?: ProximityAlert[];
   theme?: 'light' | 'dark';
 }
 
-export function MapView({ userLocation, policeLocations, theme = 'dark' }: MapViewProps) {
+export function MapView({ userLocation, policeLocations, alerts = [], theme = 'dark' }: MapViewProps) {
   const center: [number, number] = userLocation
     ? [userLocation.latitude, userLocation.longitude]
     : [-26.2041, 28.0473];
@@ -77,13 +80,18 @@ export function MapView({ userLocation, policeLocations, theme = 'dark' }: MapVi
     ? 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
     : 'https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png';
 
+  const hasThreats = alerts.length > 0;
+
   return (
-    <MapContainer
-      center={center}
-      zoom={17}
-      style={{ height: '100%', width: '100%' }}
-      zoomControl={true}
-    >
+    <div className={`map-view-container ${hasThreats ? 'split-screen' : ''}`}>
+      {hasThreats && <ThreatsSidebar alerts={alerts} />}
+      <div className={`map-wrapper ${hasThreats ? 'with-sidebar' : ''}`}>
+        <MapContainer
+          center={center}
+          zoom={17}
+          style={{ height: '100%', width: '100%' }}
+          zoomControl={true}
+        >
       <TileLayer
         key={theme}
         attribution='&copy; <a href="https://carto.com/">CARTO</a> &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>'
@@ -150,6 +158,8 @@ export function MapView({ userLocation, policeLocations, theme = 'dark' }: MapVi
           </Marker>
         </div>
       ))}
-    </MapContainer>
+        </MapContainer>
+      </div>
+    </div>
   );
 }
