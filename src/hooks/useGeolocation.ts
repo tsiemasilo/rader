@@ -3,7 +3,7 @@ import { UserLocation } from '../types';
 
 const PREFERRED_ACCURACY = 100;
 const MAX_ACCURACY = 250;
-const TIMEOUT_MS = 15000;
+const TIMEOUT_MS = 20000;
 
 export function useGeolocation() {
   const [location, setLocation] = useState<UserLocation | null>(null);
@@ -30,6 +30,9 @@ export function useGeolocation() {
         if (bestFixRef.current.accuracy > PREFERRED_ACCURACY) {
           setAccuracyWarning(`GPS accuracy is ${Math.round(bestFixRef.current.accuracy)}m. Location may be approximate.`);
         }
+      } else if (!bestFixRef.current) {
+        setError('Location request timed out. Please ensure location permissions are enabled and try again.');
+        setIsTracking(false);
       }
     }, TIMEOUT_MS);
 
@@ -68,7 +71,23 @@ export function useGeolocation() {
         }
       },
       (err) => {
-        setError(err.message);
+        let errorMessage = 'Unable to get your location. ';
+        
+        switch (err.code) {
+          case err.PERMISSION_DENIED:
+            errorMessage += 'Please allow location access in your browser settings.';
+            break;
+          case err.POSITION_UNAVAILABLE:
+            errorMessage += 'Location information is unavailable.';
+            break;
+          case err.TIMEOUT:
+            errorMessage += 'Location request timed out. Please try again.';
+            break;
+          default:
+            errorMessage += err.message;
+        }
+        
+        setError(errorMessage);
         setIsTracking(false);
         if (timeoutRef.current) {
           clearTimeout(timeoutRef.current);
@@ -78,7 +97,7 @@ export function useGeolocation() {
       {
         enableHighAccuracy: true,
         maximumAge: 0,
-        timeout: 10000,
+        timeout: 20000,
       }
     );
 
