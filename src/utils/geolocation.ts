@@ -1,5 +1,3 @@
-import { UserLocation, PoliceLocation } from '../types';
-
 export function calculateDistance(
   lat1: number,
   lon1: number,
