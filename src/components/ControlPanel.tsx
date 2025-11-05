@@ -1,4 +1,3 @@
-import React from 'react';
 import { ProximityAlert } from '../types';
 import { formatDistance, getAlertLevel } from '../utils/geolocation';
 import './ControlPanel.css';
@@ -8,7 +7,6 @@ interface ControlPanelProps {
   closestAlert: ProximityAlert | null;
   isRadarMode: boolean;
   onToggleRadar: () => void;
-  onOpenReport: () => void;
   locationError: string | null;
   accuracyWarning: string | null;
 }
@@ -18,7 +16,6 @@ export function ControlPanel({
   closestAlert,
   isRadarMode,
   onToggleRadar,
-  onOpenReport,
   locationError,
   accuracyWarning,
 }: ControlPanelProps) {
@@ -32,7 +29,7 @@ export function ControlPanel({
             {closestAlert.location.type.replace('_', ' ').toUpperCase()} - {formatDistance(closestAlert.distance)}
           </div>
         ) : (
-          <div className="status-ok">All Clear</div>
+          <div className="status-ok">All Clear - Live Scanning</div>
         )}
         {accuracyWarning && !locationError && (
           <div className="accuracy-warning">⚠️ {accuracyWarning}</div>
@@ -46,15 +43,11 @@ export function ControlPanel({
         >
           {isRadarMode ? '🗺️ MAP VIEW' : '📡 RADAR VIEW'}
         </button>
-        
-        <button className="report-button" onClick={onOpenReport}>
-          📍 REPORT
-        </button>
       </div>
 
       {alerts.length > 0 && !isRadarMode && (
         <div className="alerts-list">
-          <h3>Nearby Alerts ({alerts.length})</h3>
+          <h3>Nearby Threats ({alerts.length})</h3>
           {alerts.slice(0, 5).map((alert) => (
             <div key={alert.location.id} className="alert-item">
               <span className="alert-type">{alert.location.type.replace('_', ' ')}</span>

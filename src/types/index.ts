@@ -5,7 +5,8 @@ export interface PoliceLocation {
   type: 'police' | 'speed_camera' | 'roadblock' | 'mobile_camera';
   description: string;
   timestamp: number;
-  reportedBy?: string;
+  isPermanent?: boolean;
+  radius?: number;
 }
 
 export interface UserLocation {

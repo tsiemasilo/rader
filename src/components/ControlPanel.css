@@ -76,9 +76,8 @@
   margin-bottom: 10px;
 }
 
-.radar-toggle,
-.report-button {
-  flex: 1;
+.radar-toggle {
+  width: 100%;
   padding: 15px;
   font-size: 16px;
   font-weight: bold;
@@ -86,9 +85,6 @@
   border-radius: 8px;
   cursor: pointer;
   transition: all 0.3s ease;
-}
-
-.radar-toggle {
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   color: white;
 }
@@ -98,13 +94,7 @@
   box-shadow: 0 0 20px rgba(0, 255, 0, 0.5);
 }
 
-.report-button {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
-}
-
-.radar-toggle:hover,
-.report-button:hover {
+.radar-toggle:hover {
   transform: translateY(-2px);
   box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
 }
