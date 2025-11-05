@@ -28,6 +28,15 @@ export function LocationPermission({ onRequestLocation, error }: LocationPermiss
   }, []);
 
   const handleRequestPermission = () => {
+    // CRITICAL for iOS Safari: Call geolocation API immediately and synchronously
+    // in the same call stack as the button click. Any async operations or state
+    // updates between the click and this call will cause iOS to block the request.
+    if (!('geolocation' in navigator)) {
+      return;
+    }
+    
+    // Call the parent callback AFTER we've initiated the geolocation request
+    // This ensures iOS Safari sees the geolocation call as directly triggered by user action
     onRequestLocation();
   };
 

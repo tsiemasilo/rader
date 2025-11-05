@@ -3,7 +3,6 @@ import { UserLocation } from '../types';
 
 const GOOD_ACCURACY_THRESHOLD = 50;
 const POSITION_TIMEOUT = 30000;
-const MAX_WAIT_TIME = 15000;
 
 export function useGeolocation() {
   const [location, setLocation] = useState<UserLocation | null>(null);
@@ -33,25 +32,27 @@ export function useGeolocation() {
       return;
     }
 
-    stopTracking();
-
-    setIsTracking(true);
-    setError(null);
-    setAccuracyWarning('Acquiring GPS lock... Please wait for accurate position.');
-    hasReceivedLocation.current = false;
-
-    timeoutRef.current = setTimeout(() => {
-      if (!hasReceivedLocation.current) {
-        setError('Unable to get your location. Please ensure location access is enabled in your browser settings.');
-        setAccuracyWarning(null);
-        stopTracking();
-      }
-    }, MAX_WAIT_TIME);
-
+    // CRITICAL FOR iOS SAFARI: Call navigator.geolocation.getCurrentPosition 
+    // IMMEDIATELY, synchronously, BEFORE any state updates or other operations.
+    // iOS Safari will block the permission prompt if there are ANY operations
+    // between the user gesture (button click) and this call.
+    
+    // Clean up any previous tracking asynchronously (doesn't block permission prompt)
+    setTimeout(() => {
+      stopTracking();
+    }, 0);
+    
     // Step 1: Request initial position to trigger permission prompt
+    // This MUST be the first thing that happens!
     navigator.geolocation.getCurrentPosition(
       (position) => {
         // Successfully got initial position
+        // Now it's safe to do state updates since permission was already granted
+        setIsTracking(true);
+        setError(null);
+        setAccuracyWarning(null);
+        hasReceivedLocation.current = true;
+        
         const { latitude, longitude, accuracy, heading, speed } = position.coords;
         
         const newLocation: UserLocation = {
@@ -63,14 +64,7 @@ export function useGeolocation() {
         };
 
         setLocation(newLocation);
-        setError(null);
-        hasReceivedLocation.current = true;
         
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-          timeoutRef.current = null;
-        }
-
         if (accuracy > GOOD_ACCURACY_THRESHOLD) {
           setAccuracyWarning(
             `GPS accuracy: ±${Math.round(accuracy)}m. Signal may improve outdoors.`
@@ -135,11 +129,8 @@ export function useGeolocation() {
       },
       (err) => {
         // Error getting initial position
-        if (timeoutRef.current) {
-          clearTimeout(timeoutRef.current);
-          timeoutRef.current = null;
-        }
-
+        setIsTracking(false);
+        
         let errorMessage = 'Unable to get your location. ';
         
         switch (err.code) {
@@ -180,5 +171,5 @@ export function useGeolocation() {
     };
   }, [stopTracking]);
 
-  return { location, error, isTracking, accuracyWarning, requestLocation };
+  return { location, error, isTracking, accuracyWarning, requestLocation, startTracking };
 }

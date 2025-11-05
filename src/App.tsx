@@ -19,7 +19,7 @@ function App() {
     return (savedTheme === 'light' || savedTheme === 'dark') ? savedTheme : 'dark';
   });
   
-  const { location, error: locationError, accuracyWarning, requestLocation } = useGeolocation();
+  const { location, error: locationError, accuracyWarning, startTracking: startLocationTracking } = useGeolocation();
   const { alerts, closestAlert } = useProximityAlerts(location, policeLocations);
 
   useEffect(() => {
@@ -40,8 +40,11 @@ function App() {
   };
 
   const handleRequestLocation = () => {
+    // CRITICAL FOR iOS SAFARI: Call geolocation FIRST, then update state
+    // Any state updates before the geolocation call will cause iOS to block the permission prompt
+    startLocationTracking();
+    // Mark that user has requested location (happens after geolocation call is initiated)
     setLocationRequested(true);
-    requestLocation();
   };
 
   useEffect(() => {
