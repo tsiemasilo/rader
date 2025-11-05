@@ -4,23 +4,23 @@
 A responsive web application for detecting police, speed cameras, and roadblocks while driving. Built with React, TypeScript, and Leaflet.js, featuring real-time GPS tracking, proximity alerts, and a radar scanner UI mode.
 
 ## Recent Changes
-- **2025-11-05**: High-Precision GPS Implementation - Real-Time Accurate Coordinates
-  - **Problem Fixed**: App was showing inaccurate location coordinates, not the user's real GPS position
-  - **Complete GPS Rewrite**: Implemented strict high-accuracy GPS positioning
-    - Only displays location when accuracy is ≤30m (precise GPS lock required)
-    - Never shows low-accuracy fallback or cached positions
-    - Extended GPS timeout to 60 seconds to allow full GPS acquisition
-    - maximumAge set to 0 to prevent any stale/cached coordinates
-    - Real-time accuracy feedback shows "GPS accuracy: XXm (best: XXm). Waiting for better signal..."
-    - If GPS cannot achieve 30m accuracy within 60s, shows clear error instead of inaccurate position
-  - **No Default Location**: Map completely hidden until real GPS coordinates acquired
-    - Removed all fallback center locations from MapView and RadarView
-    - GPS loading overlay displays until actual device coordinates are obtained
-    - Map appears directly at your precise location when GPS locks
-  - **Dark Mode Map Fixed**: Restored full street visibility in dark mode
-    - Uses 'dark_all' tileset with complete street, road, and landmark details
-    - Maintains dark aesthetic while ensuring full map visibility
-  - **Mobile Responsive**: All changes fully tested and working on mobile devices
+- **2025-11-05**: GPS Location Acquisition Fix - Resolved Infinite Loading Issue
+  - **Problem Fixed**: App was stuck on "Acquiring GPS Location..." forever on both mobile and desktop
+  - **Root Cause**: Code was rejecting valid GPS data because accuracy wasn't ≤30m (too strict threshold)
+    - Most devices can't achieve 30m accuracy indoors or in urban areas
+    - GPS was working, but data was being rejected due to overly strict filtering
+  - **Solution Implemented**:
+    - **Immediate Location Acceptance**: Now accepts GPS position immediately, regardless of accuracy
+    - **Smart Accuracy Warnings**: Shows "GPS accuracy: ±XXm. Signal may improve outdoors" for accuracy >50m
+    - **Faster Timeout**: Reduced from 60s to 15s for better user experience
+    - **Fixed Dependency Loop**: Removed infinite re-render risk in useCallback
+    - **Proper Cleanup**: Added stopTracking() call in timeout handler
+  - **Result**: Users now get their location within seconds on both mobile and desktop
+  - **Code Changes**: Updated `src/hooks/useGeolocation.ts`
+    - Changed from conditional location acceptance to immediate acceptance
+    - Accuracy threshold now only affects warning display, not location blocking
+    - Used `hasReceivedLocation` ref for better timeout handling
+    - Removed `location` from useCallback dependencies to prevent loops
   
 - **2025-11-05**: GPS Accuracy and Map Visibility Improvements
   - **GPS High-Accuracy Positioning**: Significantly improved GPS accuracy by filtering out low-accuracy readings
