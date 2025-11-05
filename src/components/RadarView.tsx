@@ -141,8 +141,8 @@ export function RadarView({ alerts, closestAlert, userLocation }: RadarViewProps
         <circle cx="150" cy="150" r="3" fill="#00ff00" />
       </svg>
 
-      <div className="radar-info">
-        {closestAlert ? (
+      {closestAlert && (
+        <div className="radar-info">
           <div className="alert-panel">
             <div className="alert-type">
               {closestAlert.location.type.replace('_', ' ').toUpperCase()}
@@ -159,13 +159,8 @@ export function RadarView({ alerts, closestAlert, userLocation }: RadarViewProps
               {closestAlert.distance >= 500 && 'ALERT - AHEAD'}
             </div>
           </div>
-        ) : (
-          <div className="no-alerts">
-            <p>SCANNING...</p>
-            <p className="scan-status">No threats detected</p>
-          </div>
-        )}
-      </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -1,7 +1,7 @@
 .threats-sidebar {
   flex: 0 0 clamp(240px, 30%, 320px);
   height: 100%;
-  background: linear-gradient(135deg, rgba(0, 20, 0, 0.95) 0%, rgba(0, 0, 0, 0.95) 100%);
+  background: linear-gradient(135deg, rgba(30, 50, 30, 0.95) 0%, rgba(58, 58, 58, 0.95) 100%);
   border-right: 2px solid #00ff00;
   display: flex;
   flex-direction: column;
@@ -24,7 +24,7 @@
 .sidebar-header {
   padding: 20px;
   border-bottom: 2px solid #00ff00;
-  background: rgba(0, 0, 0, 0.5);
+  background: rgba(40, 40, 40, 0.5);
 }
 
 .sidebar-header h2 {
@@ -63,7 +63,7 @@
 }
 
 .threats-list::-webkit-scrollbar-track {
-  background: rgba(0, 0, 0, 0.3);
+  background: rgba(40, 40, 40, 0.3);
 }
 
 .threats-list::-webkit-scrollbar-thumb {
