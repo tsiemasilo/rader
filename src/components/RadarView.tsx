@@ -18,9 +18,10 @@ interface RadarViewProps {
   alerts: ProximityAlert[];
   closestAlert: ProximityAlert | null;
   userLocation: UserLocation | null;
+  theme?: 'light' | 'dark';
 }
 
-export function RadarView({ alerts, closestAlert, userLocation }: RadarViewProps) {
+export function RadarView({ alerts, closestAlert, userLocation, theme = 'dark' }: RadarViewProps) {
   const [scanAngle, setScanAngle] = useState(0);
 
   useEffect(() => {
@@ -82,7 +83,11 @@ export function RadarView({ alerts, closestAlert, userLocation }: RadarViewProps
             attributionControl={false}
           >
             <TileLayer
-              url="https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png"
+              key={theme}
+              url={theme === 'light' 
+                ? "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                : "https://{s}.basemaps.cartocdn.com/rastertiles/dark_matter/{z}/{x}/{y}{r}.png"
+              }
               maxZoom={20}
               opacity={0.3}
             />

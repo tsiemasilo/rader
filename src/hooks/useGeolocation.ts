@@ -1,10 +1,10 @@
 import { useState, useEffect, useCallback, useRef } from 'react';
 import { UserLocation } from '../types';
 
-const PREFERRED_ACCURACY = 100;
-const MAX_ACCURACY = 500;
-const POSITION_TIMEOUT = 15000;
-const FALLBACK_TIMEOUT_MS = 16000;
+const PREFERRED_ACCURACY = 50;
+const MAX_ACCURACY = 150;
+const POSITION_TIMEOUT = 20000;
+const FALLBACK_TIMEOUT_MS = 25000;
 
 export function useGeolocation() {
   const [location, setLocation] = useState<UserLocation | null>(null);
@@ -79,13 +79,11 @@ export function useGeolocation() {
             clearTimeout(timeoutRef.current);
             timeoutRef.current = null;
           }
-        } else if (accuracy <= MAX_ACCURACY) {
-          setLocation(newLocation);
-          setError(null);
-          setAccuracyWarning(`GPS accuracy is ${Math.round(accuracy)}m. Location may be approximate.`);
-          if (timeoutRef.current) {
-            clearTimeout(timeoutRef.current);
-            timeoutRef.current = null;
+        } else if (accuracy <= MAX_ACCURACY && bestFixRef.current.accuracy === accuracy) {
+          if (!location || location.accuracy > accuracy) {
+            setLocation(newLocation);
+            setError(null);
+            setAccuracyWarning(`GPS accuracy is ${Math.round(accuracy)}m. Improving...`);
           }
         }
       },

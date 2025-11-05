@@ -78,7 +78,7 @@ export function MapView({ userLocation, policeLocations, alerts = [], theme = 'd
 
   const tileUrl = theme === 'light'
     ? 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
-    : 'https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png';
+    : 'https://{s}.basemaps.cartocdn.com/rastertiles/dark_matter/{z}/{x}/{y}{r}.png';
 
   const hasThreats = alerts.length > 0;
   const isAcquiringGPS = !userLocation;

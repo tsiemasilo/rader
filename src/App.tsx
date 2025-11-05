@@ -41,7 +41,7 @@ function App() {
     <div className="app">
       <div className="view-container">
         {isRadarMode ? (
-          <RadarView alerts={alerts} closestAlert={closestAlert} userLocation={location} />
+          <RadarView alerts={alerts} closestAlert={closestAlert} userLocation={location} theme={theme} />
         ) : (
           <MapView userLocation={location} policeLocations={policeLocations} alerts={alerts} theme={theme} />
         )}
