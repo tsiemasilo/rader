@@ -4,13 +4,22 @@
 A responsive web application for detecting police, speed cameras, and roadblocks while driving. Built with React, TypeScript, and Leaflet.js, featuring real-time GPS tracking, proximity alerts, and a radar scanner UI mode.
 
 ## Recent Changes
+- **2025-11-05**: Live scanning mode update
+  - Converted to live GPS scanning (removed user reporting system)
+  - Upgraded to Google Maps-style clean tiles (CARTO Voyager)
+  - Increased map zoom from 13 to 17 for clear street view
+  - Added red car emoji icon for user location marker
+  - Implemented permanent speed camera database with 8 NYC locations
+  - Added colored radius circles showing threat detection zones
+  - Updated UI to display "Live Scanning" mode
+  - Fixed Vite HMR refresh loop issue by disabling HMR
+
 - **2025-11-05**: Initial project setup
   - Created React + Vite + TypeScript application
   - Implemented GPS tracking with HTML5 Geolocation API
   - Built interactive map view with Leaflet.js
   - Created animated radar scanner UI
   - Implemented proximity-based audio alerts
-  - Added user reporting feature for crowdsourced data
   - Configured for Replit deployment on port 5000
 
 ## Project Architecture
@@ -25,10 +34,9 @@ A responsive web application for detecting police, speed cameras, and roadblocks
 - **Storage**: Browser localStorage
 
 ### Key Components
-1. **MapView**: Interactive map showing user location and police/camera markers
+1. **MapView**: Interactive map with Google Maps-style tiles, showing user location (car icon) and permanent threat markers with radius zones
 2. **RadarView**: Animated radar scanner with proximity detection
-3. **ControlPanel**: Status display and mode switching controls
-4. **ReportForm**: User interface for reporting new locations
+3. **ControlPanel**: Status display with live scanning mode and radar toggle
 
 ### Custom Hooks
 - `useGeolocation`: Manages real-time GPS tracking
