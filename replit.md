@@ -4,6 +4,25 @@
 A responsive web application for detecting police, speed cameras, and roadblocks while driving. Built with React, TypeScript, and Leaflet.js, featuring real-time GPS tracking, proximity alerts, and a radar scanner UI mode.
 
 ## Recent Changes
+- **2025-11-05**: Major UX Cleanup and GPS Permission Improvements
+  - **Removed Request Location Button**: Eliminated confusing "Request Location" button from burger menu
+    - Button only showed when there was an error, causing inconsistency
+    - GPS auto-starts on app load, so manual request is unnecessary
+    - Cleaned up props across App.tsx → ControlPanel → BurgerMenu
+  - **Improved Permission Prompting**: Enhanced geolocation flow for mobile devices
+    - Added two-step approach: `getCurrentPosition` first, then `watchPosition`
+    - More reliable browser permission prompt, especially on mobile
+    - Better error messages with detailed instructions for fixing permission issues
+    - Clear guidance for users when permissions are denied
+  - **Fixed Dark Mode Color**: Changed alert badge text from pure black to #333
+    - Better visibility in light mode
+    - Maintains proper contrast
+  - **Codebase Cleanup**: Removed unnecessary files
+    - Deleted attached_assets folder (temporary paste files)
+    - Removed PROJECT_STATUS.md (outdated checklist)
+    - Removed netlify.toml and _redirects (not needed for Replit deployment)
+  - **Result**: Cleaner UX, more reliable location permissions, better organized codebase
+
 - **2025-11-05**: GPS Location Acquisition Fix - Resolved Infinite Loading Issue
   - **Problem Fixed**: App was stuck on "Acquiring GPS Location..." forever on both mobile and desktop
   - **Root Cause**: Code was rejecting valid GPS data because accuracy wasn't ≤30m (too strict threshold)
