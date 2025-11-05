@@ -4,6 +4,17 @@
 A responsive web application for detecting police, speed cameras, and roadblocks while driving. Built with React, TypeScript, and Leaflet.js, featuring real-time GPS tracking, proximity alerts, and a radar scanner UI mode.
 
 ## Recent Changes
+- **2025-11-05**: Fixed regression issues - Restored dark mode visibility and cleaned radar view
+  - **Dark Mode Color Fix**: Updated all backgrounds from pure black to light/dark gray (#3a3a3a) for better visibility
+    - Affected components: RadarView, MapView, ThreatsSidebar, BurgerMenu, App, and root styles
+    - Alert panels and overlays now use rgba(58, 58, 58, 0.9) instead of rgba(0, 0, 0, 0.8)
+    - Scrollbar tracks and menu overlays updated to rgba(40, 40, 40, ...)
+    - Box-shadows kept as black for proper visual effect
+  - **Radar View Cleanup**: Removed "SCANNING... No threats detected" box from radar view
+    - Radar now shows only the animated scanner and map background when no threats present
+    - Alert panel displays only when actual threats are detected
+    - Map background with 0.3 opacity remains intact for situational awareness
+  
 - **2025-11-05**: Major UX improvement - Split-screen threat detection with directional arrows
   - **Split-Screen Map View**: When threats are detected, the map automatically splits into two sections
     - Left side (30%): ThreatsSidebar showing nearby threats with directional arrow indicators
