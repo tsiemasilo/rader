@@ -53,8 +53,20 @@ export function RadarView({ alerts, closestAlert, userLocation }: RadarViewProps
     ? [userLocation.latitude, userLocation.longitude]
     : [-26.2041, 28.0473];
 
+  const isAcquiringGPS = !userLocation;
+
   return (
     <div className="radar-container">
+      {isAcquiringGPS && (
+        <div className="gps-loading-overlay">
+          <div className="gps-loading-content">
+            <div className="gps-spinner"></div>
+            <h2>🛰️ Acquiring GPS Location...</h2>
+            <p>Radar mode requires your precise location</p>
+            <small>Make sure location permissions are enabled</small>
+          </div>
+        </div>
+      )}
       {userLocation && (
         <div className="radar-map-background">
           <MapContainer

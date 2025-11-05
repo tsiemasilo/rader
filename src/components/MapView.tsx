@@ -81,11 +81,22 @@ export function MapView({ userLocation, policeLocations, alerts = [], theme = 'd
     : 'https://{s}.basemaps.cartocdn.com/rastertiles/dark_all/{z}/{x}/{y}{r}.png';
 
   const hasThreats = alerts.length > 0;
+  const isAcquiringGPS = !userLocation;
 
   return (
     <div className={`map-view-container ${hasThreats ? 'split-screen' : ''}`}>
       {hasThreats && <ThreatsSidebar alerts={alerts} />}
       <div className={`map-wrapper ${hasThreats ? 'with-sidebar' : ''}`}>
+        {isAcquiringGPS && (
+          <div className="gps-loading-overlay">
+            <div className="gps-loading-content">
+              <div className="gps-spinner"></div>
+              <h2>🛰️ Acquiring GPS Location...</h2>
+              <p>Please wait while we get your precise location</p>
+              <small>Make sure location permissions are enabled</small>
+            </div>
+          </div>
+        )}
         <MapContainer
           center={center}
           zoom={17}
