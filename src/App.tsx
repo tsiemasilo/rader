@@ -44,6 +44,12 @@ function App() {
     requestLocation();
   };
 
+  useEffect(() => {
+    if (locationError && locationError.includes('denied')) {
+      setLocationRequested(false);
+    }
+  }, [locationError]);
+
   if (!locationRequested && !location) {
     return <LocationPermission onRequestLocation={handleRequestLocation} error={locationError} />;
   }
