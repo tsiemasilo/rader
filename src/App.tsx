@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { MapView } from './components/MapView';
 import { RadarView } from './components/RadarView';
 import { ControlPanel } from './components/ControlPanel';
+import { LocationPermission } from './components/LocationPermission';
 import { useGeolocation } from './hooks/useGeolocation';
 import { useProximityAlerts } from './hooks/useProximityAlerts';
 import { getStoredLocations } from './utils/storage';
@@ -12,12 +13,13 @@ import './App.css';
 function App() {
   const [isRadarMode, setIsRadarMode] = useState(false);
   const [policeLocations, setPoliceLocations] = useState<PoliceLocation[]>([]);
+  const [locationRequested, setLocationRequested] = useState(false);
   const [theme, setTheme] = useState<'light' | 'dark'>(() => {
     const savedTheme = localStorage.getItem('mapTheme');
     return (savedTheme === 'light' || savedTheme === 'dark') ? savedTheme : 'dark';
   });
   
-  const { location, error: locationError, accuracyWarning } = useGeolocation();
+  const { location, error: locationError, accuracyWarning, requestLocation } = useGeolocation();
   const { alerts, closestAlert } = useProximityAlerts(location, policeLocations);
 
   useEffect(() => {
@@ -36,6 +38,15 @@ function App() {
   const handleToggleTheme = () => {
     setTheme(prevTheme => prevTheme === 'dark' ? 'light' : 'dark');
   };
+
+  const handleRequestLocation = () => {
+    setLocationRequested(true);
+    requestLocation();
+  };
+
+  if (!locationRequested && !location) {
+    return <LocationPermission onRequestLocation={handleRequestLocation} error={locationError} />;
+  }
 
   return (
     <div className="app">

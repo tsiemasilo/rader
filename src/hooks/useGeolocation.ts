@@ -174,11 +174,11 @@ export function useGeolocation() {
   }, [startTracking]);
 
   useEffect(() => {
-    startTracking();
+    // Cleanup when component unmounts
     return () => {
       stopTracking();
     };
-  }, [startTracking, stopTracking]);
+  }, [stopTracking]);
 
   return { location, error, isTracking, accuracyWarning, requestLocation };
 }
