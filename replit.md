@@ -4,6 +4,18 @@
 A responsive web application for detecting police, speed cameras, and roadblocks while driving. Built with React, TypeScript, and Leaflet.js, featuring real-time GPS tracking, proximity alerts, and a radar scanner UI mode.
 
 ## Recent Changes
+- **2025-11-05**: Major feature update - South African locations, theme toggle, radar map background
+  - **Geolocation**: Added manual location request button for better permission handling
+  - **Light/Dark Mode**: Implemented theme toggle with localStorage persistence
+    - Light mode: CARTO Voyager tiles (clean, bright)
+    - Dark mode: CARTO Dark tiles (sleek, dark)
+  - **Radar View**: Added semi-transparent background map for situational awareness
+  - **South African Locations**: Replaced all NYC locations with 28 SA locations
+    - Johannesburg: 10 locations (M1, N1, N3 speed cameras, police stations, roadblocks)
+    - Cape Town: 10 locations (N1, N2, M3 speed cameras, police stations, checkpoints)
+    - Pretoria: 8 locations (N1, N4, R101 speed cameras, police stations, roadblocks)
+  - Default map center now set to Johannesburg, South Africa
+  
 - **2025-11-05**: Geolocation improvements, dark theme, and Netlify deployment setup
   - Enhanced geolocation error handling with specific permission-denied messages
   - Extended geolocation timeout from 15s to 20s for better GPS acquisition
@@ -13,13 +25,10 @@ A responsive web application for detecting police, speed cameras, and roadblocks
   
 - **2025-11-05**: Live scanning mode update
   - Converted to live GPS scanning (removed user reporting system)
-  - Upgraded to Google Maps-style clean tiles (CARTO Voyager)
   - Increased map zoom from 13 to 17 for clear street view
   - Added red car emoji icon for user location marker
-  - Implemented permanent speed camera database with 8 NYC locations
   - Added colored radius circles showing threat detection zones
   - Updated UI to display "Live Scanning" mode
-  - Fixed Vite HMR refresh loop issue by disabling HMR
 
 - **2025-11-05**: Initial project setup
   - Created React + Vite + TypeScript application
@@ -41,9 +50,9 @@ A responsive web application for detecting police, speed cameras, and roadblocks
 - **Storage**: Browser localStorage
 
 ### Key Components
-1. **MapView**: Interactive map with dark-themed tiles, showing user location (car icon) and permanent threat markers with radius zones
-2. **RadarView**: Animated radar scanner with proximity detection
-3. **ControlPanel**: Status display with live scanning mode and radar toggle
+1. **MapView**: Interactive map with switchable light/dark themes, showing user location (car icon) and permanent threat markers with radius zones
+2. **RadarView**: Animated radar scanner with proximity detection and semi-transparent background map
+3. **ControlPanel**: Status display with live scanning mode, radar toggle, theme toggle, and manual location request button
 
 ### Custom Hooks
 - `useGeolocation`: Manages real-time GPS tracking
