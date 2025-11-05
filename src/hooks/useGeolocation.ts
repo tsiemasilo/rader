@@ -2,8 +2,9 @@ import { useState, useEffect, useCallback, useRef } from 'react';
 import { UserLocation } from '../types';
 
 const PREFERRED_ACCURACY = 100;
-const MAX_ACCURACY = 250;
-const TIMEOUT_MS = 20000;
+const MAX_ACCURACY = 500;
+const POSITION_TIMEOUT = 15000;
+const FALLBACK_TIMEOUT_MS = 16000;
 
 export function useGeolocation() {
   const [location, setLocation] = useState<UserLocation | null>(null);
@@ -42,14 +43,17 @@ export function useGeolocation() {
     timeoutRef.current = setTimeout(() => {
       if (bestFixRef.current) {
         setLocation(bestFixRef.current);
+        setError(null);
         if (bestFixRef.current.accuracy > PREFERRED_ACCURACY) {
           setAccuracyWarning(`GPS accuracy is ${Math.round(bestFixRef.current.accuracy)}m. Location may be approximate.`);
+        } else {
+          setAccuracyWarning(null);
         }
-      } else if (!bestFixRef.current) {
-        setError('Location request timed out. Please ensure location permissions are enabled and try again.');
+      } else {
+        setError('Unable to get your location. Please enable location permissions in your browser and ensure GPS is on.');
         setIsTracking(false);
       }
-    }, TIMEOUT_MS);
+    }, FALLBACK_TIMEOUT_MS);
 
     watchIdRef.current = navigator.geolocation.watchPosition(
       (position) => {
@@ -86,6 +90,10 @@ export function useGeolocation() {
         }
       },
       (err) => {
+        if (err.code === err.TIMEOUT) {
+          return;
+        }
+        
         let errorMessage = 'Unable to get your location. ';
         
         switch (err.code) {
@@ -94,9 +102,6 @@ export function useGeolocation() {
             break;
           case err.POSITION_UNAVAILABLE:
             errorMessage += 'Location information is unavailable.';
-            break;
-          case err.TIMEOUT:
-            errorMessage += 'Location request timed out. Please try again.';
             break;
           default:
             errorMessage += err.message;
@@ -111,8 +116,8 @@ export function useGeolocation() {
       },
       {
         enableHighAccuracy: true,
-        maximumAge: 0,
-        timeout: 20000,
+        maximumAge: 5000,
+        timeout: POSITION_TIMEOUT,
       }
     );
   }, [stopTracking]);
