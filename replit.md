@@ -4,6 +4,18 @@
 A responsive web application for detecting police, speed cameras, and roadblocks while driving. Built with React, TypeScript, and Leaflet.js, featuring real-time GPS tracking, proximity alerts, and a radar scanner UI mode.
 
 ## Recent Changes
+- **2025-11-05**: UX improvements - Burger menu and geolocation optimization
+  - **Burger Menu**: Created responsive burger menu for all controls
+    - Moved Radar View toggle, Light/Dark theme toggle, and Request Location into menu
+    - Clean animated menu with green theme matching app style
+    - Overlay and auto-close on action for better mobile UX
+  - **Geolocation Optimization**: Improved GPS timeout handling
+    - Accepts locations up to 500m accuracy for faster initial fix
+    - Timeout deferred to 16s (after browser's 15s attempt) to prevent premature errors
+    - Browser TIMEOUT errors now gracefully deferred to fallback timer
+    - Immediate errors only for critical issues (permission denied, position unavailable)
+  - **Build Fix**: Removed unused TypeScript import for Netlify deployment compatibility
+  
 - **2025-11-05**: Major feature update - South African locations, theme toggle, radar map background
   - **Geolocation**: Added manual location request button for better permission handling
   - **Light/Dark Mode**: Implemented theme toggle with localStorage persistence
@@ -52,7 +64,8 @@ A responsive web application for detecting police, speed cameras, and roadblocks
 ### Key Components
 1. **MapView**: Interactive map with switchable light/dark themes, showing user location (car icon) and permanent threat markers with radius zones
 2. **RadarView**: Animated radar scanner with proximity detection and semi-transparent background map
-3. **ControlPanel**: Status display with live scanning mode, radar toggle, theme toggle, and manual location request button
+3. **BurgerMenu**: Responsive menu component housing all controls (Radar View toggle, theme toggle, location request)
+4. **ControlPanel**: Status display showing live scanning mode and nearby threat alerts
 
 ### Custom Hooks
 - `useGeolocation`: Manages real-time GPS tracking
