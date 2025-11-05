@@ -4,6 +4,22 @@
 A responsive web application for detecting police, speed cameras, and roadblocks while driving. Built with React, TypeScript, and Leaflet.js, featuring real-time GPS tracking, proximity alerts, and a radar scanner UI mode.
 
 ## Recent Changes
+- **2025-11-05**: GPS Accuracy and Map Visibility Improvements
+  - **GPS High-Accuracy Positioning**: Significantly improved GPS accuracy by filtering out low-accuracy readings
+    - Reduced PREFERRED_ACCURACY from 100m to 50m for more precise location tracking
+    - Reduced MAX_ACCURACY from 500m to 150m to prevent showing very inaccurate initial locations
+    - Extended position timeout from 15s to 20s and fallback timeout to 25s for better GPS acquisition
+    - Added smart filtering: only updates location when accuracy improves, preventing jumps to less accurate positions
+    - Users now see "GPS accuracy is XXm. Improving..." message while GPS fine-tunes the location
+  - **Dark Mode Map Visibility**: Changed dark mode tileset from 'dark_all' to 'dark_matter' for better visibility
+    - Map now uses lighter, more visible grayscale tiles in dark mode
+    - Maintains sleek dark aesthetic while improving readability of streets and landmarks
+    - Applies to both Map View and Radar View background
+  - **Radar View Theme Switching**: Fixed theme toggle not working in Radar mode
+    - RadarView now properly receives and applies theme prop
+    - Map background in Radar mode now switches between light and dark tiles correctly
+    - Added `key` attribute to force tile layer refresh when theme changes
+  
 - **2025-11-05**: GPS Location Consistency Fix - Added GPS acquisition loading indicator
   - **Problem Fixed**: App no longer shows confusing default Johannesburg location before GPS acquires
   - **GPS Loading Overlay**: Added to both Map View and Radar View
