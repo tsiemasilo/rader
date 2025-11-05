@@ -50,15 +50,11 @@ export function RadarView({ alerts, closestAlert, userLocation, theme = 'dark' }
     };
   };
 
-  const center: [number, number] = userLocation
-    ? [userLocation.latitude, userLocation.longitude]
-    : [-26.2041, 28.0473];
-
   const isAcquiringGPS = !userLocation;
 
-  return (
-    <div className="radar-container">
-      {isAcquiringGPS && (
+  if (isAcquiringGPS) {
+    return (
+      <div className="radar-container">
         <div className="gps-loading-overlay">
           <div className="gps-loading-content">
             <div className="gps-spinner"></div>
@@ -67,39 +63,44 @@ export function RadarView({ alerts, closestAlert, userLocation, theme = 'dark' }
             <small>Make sure location permissions are enabled</small>
           </div>
         </div>
-      )}
-      {userLocation && (
-        <div className="radar-map-background">
-          <MapContainer
+      </div>
+    );
+  }
+
+  const center: [number, number] = [userLocation.latitude, userLocation.longitude];
+
+  return (
+    <div className="radar-container">
+      <div className="radar-map-background">
+        <MapContainer
+          center={center}
+          zoom={15}
+          style={{ height: '100%', width: '100%' }}
+          zoomControl={false}
+          dragging={false}
+          scrollWheelZoom={false}
+          doubleClickZoom={false}
+          touchZoom={false}
+          keyboard={false}
+          attributionControl={false}
+        >
+          <TileLayer
+            key={theme}
+            url={theme === 'light' 
+              ? "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+              : "https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png"
+            }
+            maxZoom={20}
+            opacity={0.3}
+          />
+          <Marker position={center} icon={carIcon} />
+          <Circle
             center={center}
-            zoom={15}
-            style={{ height: '100%', width: '100%' }}
-            zoomControl={false}
-            dragging={false}
-            scrollWheelZoom={false}
-            doubleClickZoom={false}
-            touchZoom={false}
-            keyboard={false}
-            attributionControl={false}
-          >
-            <TileLayer
-              key={theme}
-              url={theme === 'light' 
-                ? "https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
-                : "https://{s}.basemaps.cartocdn.com/rastertiles/dark_matter/{z}/{x}/{y}{r}.png"
-              }
-              maxZoom={20}
-              opacity={0.3}
-            />
-            <Marker position={center} icon={carIcon} />
-            <Circle
-              center={center}
-              radius={userLocation.accuracy}
-              pathOptions={{ color: '#4285F4', fillColor: '#4285F4', fillOpacity: 0.15, weight: 2 }}
-            />
-          </MapContainer>
-        </div>
-      )}
+            radius={userLocation.accuracy}
+            pathOptions={{ color: '#4285F4', fillColor: '#4285F4', fillOpacity: 0.15, weight: 2 }}
+          />
+        </MapContainer>
+      </div>
       <svg className="radar-svg" viewBox="0 0 300 300">
         <circle cx="150" cy="150" r="140" fill="none" stroke="#00ff00" strokeWidth="1" opacity="0.3" />
         <circle cx="150" cy="150" r="100" fill="none" stroke="#00ff00" strokeWidth="1" opacity="0.3" />

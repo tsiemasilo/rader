@@ -72,22 +72,17 @@ interface MapViewProps {
 }
 
 export function MapView({ userLocation, policeLocations, alerts = [], theme = 'dark' }: MapViewProps) {
-  const center: [number, number] = userLocation
-    ? [userLocation.latitude, userLocation.longitude]
-    : [-26.2041, 28.0473];
-
   const tileUrl = theme === 'light'
     ? 'https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png'
-    : 'https://{s}.basemaps.cartocdn.com/rastertiles/dark_matter/{z}/{x}/{y}{r}.png';
+    : 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png';
 
   const hasThreats = alerts.length > 0;
   const isAcquiringGPS = !userLocation;
 
-  return (
-    <div className={`map-view-container ${hasThreats ? 'split-screen' : ''}`}>
-      {hasThreats && <ThreatsSidebar alerts={alerts} />}
-      <div className={`map-wrapper ${hasThreats ? 'with-sidebar' : ''}`}>
-        {isAcquiringGPS && (
+  if (isAcquiringGPS) {
+    return (
+      <div className={`map-view-container ${hasThreats ? 'split-screen' : ''}`}>
+        <div className="map-wrapper">
           <div className="gps-loading-overlay">
             <div className="gps-loading-content">
               <div className="gps-spinner"></div>
@@ -96,7 +91,17 @@ export function MapView({ userLocation, policeLocations, alerts = [], theme = 'd
               <small>Make sure location permissions are enabled</small>
             </div>
           </div>
-        )}
+        </div>
+      </div>
+    );
+  }
+
+  const center: [number, number] = [userLocation.latitude, userLocation.longitude];
+
+  return (
+    <div className={`map-view-container ${hasThreats ? 'split-screen' : ''}`}>
+      {hasThreats && <ThreatsSidebar alerts={alerts} />}
+      <div className={`map-wrapper ${hasThreats ? 'with-sidebar' : ''}`}>
         <MapContainer
           center={center}
           zoom={17}
@@ -110,23 +115,19 @@ export function MapView({ userLocation, policeLocations, alerts = [], theme = 'd
         maxZoom={20}
       />
       
-      {userLocation && (
-        <>
-          <MapUpdater center={[userLocation.latitude, userLocation.longitude]} />
-          <Marker position={[userLocation.latitude, userLocation.longitude]} icon={carIcon}>
-            <Popup>
-              <strong>Your Location</strong>
-              <br />
-              Accuracy: ±{Math.round(userLocation.accuracy)}m
-            </Popup>
-          </Marker>
-          <Circle
-            center={[userLocation.latitude, userLocation.longitude]}
-            radius={userLocation.accuracy}
-            pathOptions={{ color: '#4285F4', fillColor: '#4285F4', fillOpacity: 0.15, weight: 2 }}
-          />
-        </>
-      )}
+      <MapUpdater center={[userLocation.latitude, userLocation.longitude]} />
+      <Marker position={[userLocation.latitude, userLocation.longitude]} icon={carIcon}>
+        <Popup>
+          <strong>Your Location</strong>
+          <br />
+          Accuracy: ±{Math.round(userLocation.accuracy)}m
+        </Popup>
+      </Marker>
+      <Circle
+        center={[userLocation.latitude, userLocation.longitude]}
+        radius={userLocation.accuracy}
+        pathOptions={{ color: '#4285F4', fillColor: '#4285F4', fillOpacity: 0.15, weight: 2 }}
+      />
 
       {policeLocations.map((location) => (
         <div key={location.id}>
