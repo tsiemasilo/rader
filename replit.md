@@ -4,6 +4,16 @@
 A responsive web application for detecting police, speed cameras, and roadblocks while driving. Built with React, TypeScript, and Leaflet.js, featuring real-time GPS tracking, proximity alerts, and a radar scanner UI mode.
 
 ## Recent Changes
+- **2025-11-05**: GPS Location Consistency Fix - Added GPS acquisition loading indicator
+  - **Problem Fixed**: App no longer shows confusing default Johannesburg location before GPS acquires
+  - **GPS Loading Overlay**: Added to both Map View and Radar View
+    - Displays animated spinner with clear "🛰️ Acquiring GPS Location..." message
+    - Shows helpful instructions about location permissions
+    - Prevents confusion by blocking view of fallback location during GPS acquisition
+    - Consistent green-themed styling matching the app's design
+  - **User Experience**: Users now see clear feedback during GPS acquisition instead of appearing at a random location
+  - **Implementation**: User marker and detection radius only appear after actual GPS coordinates are obtained
+  
 - **2025-11-05**: Fixed regression issues - Restored dark mode visibility and cleaned radar view
   - **Dark Mode Color Fix**: Updated all backgrounds from pure black to light/dark gray (#3a3a3a) for better visibility
     - Affected components: RadarView, MapView, ThreatsSidebar, BurgerMenu, App, and root styles
