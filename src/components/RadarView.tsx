@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ProximityAlert } from '../types';
 import { formatDistance } from '../utils/geolocation';
 import { audioManager } from '../utils/audio';
@@ -69,7 +69,7 @@ export function RadarView({ alerts, closestAlert }: RadarViewProps) {
           opacity="0.5"
         />
 
-        {alerts.map((alert, index) => {
+        {alerts.map((alert) => {
           const pos = getRadarPosition(alert);
           const isClosest = closestAlert?.location.id === alert.location.id;
           
