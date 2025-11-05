@@ -17,7 +17,7 @@ function App() {
     return (savedTheme === 'light' || savedTheme === 'dark') ? savedTheme : 'dark';
   });
   
-  const { location, error: locationError, accuracyWarning, requestLocation } = useGeolocation();
+  const { location, error: locationError, accuracyWarning } = useGeolocation();
   const { alerts, closestAlert } = useProximityAlerts(location, policeLocations);
 
   useEffect(() => {
@@ -53,7 +53,6 @@ function App() {
         onToggleRadar={handleToggleRadar}
         locationError={locationError}
         accuracyWarning={accuracyWarning}
-        onRequestLocation={requestLocation}
         theme={theme}
         onToggleTheme={handleToggleTheme}
       />

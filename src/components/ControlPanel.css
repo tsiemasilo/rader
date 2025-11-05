@@ -52,7 +52,7 @@
 
 .alert-badge.info {
   background: rgba(255, 255, 0, 0.8);
-  color: black;
+  color: #333;
 }
 
 @keyframes urgentPulse {

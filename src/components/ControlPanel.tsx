@@ -9,7 +9,6 @@ interface ControlPanelProps {
   onToggleRadar: () => void;
   locationError: string | null;
   accuracyWarning: string | null;
-  onRequestLocation: () => void;
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
 }
@@ -20,7 +19,6 @@ export function ControlPanel({
   onToggleRadar,
   locationError,
   accuracyWarning,
-  onRequestLocation,
   theme,
   onToggleTheme,
 }: ControlPanelProps) {
@@ -31,8 +29,6 @@ export function ControlPanel({
         onToggleRadar={onToggleRadar}
         theme={theme}
         onToggleTheme={onToggleTheme}
-        locationError={locationError}
-        onRequestLocation={onRequestLocation}
       />
       
       {!isRadarMode && (

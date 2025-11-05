@@ -6,8 +6,6 @@ interface BurgerMenuProps {
   onToggleRadar: () => void;
   theme: 'light' | 'dark';
   onToggleTheme: () => void;
-  locationError: string | null;
-  onRequestLocation: () => void;
 }
 
 export function BurgerMenu({
@@ -15,8 +13,6 @@ export function BurgerMenu({
   onToggleRadar,
   theme,
   onToggleTheme,
-  locationError,
-  onRequestLocation,
 }: BurgerMenuProps) {
   const [isOpen, setIsOpen] = useState(false);
 
@@ -60,16 +56,6 @@ export function BurgerMenu({
               <span className="menu-icon">{theme === 'dark' ? '☀️' : '🌙'}</span>
               <span className="menu-label">{theme === 'dark' ? 'Light Mode' : 'Dark Mode'}</span>
             </button>
-
-            {locationError && (
-              <button 
-                className="menu-item highlight"
-                onClick={() => handleMenuItemClick(onRequestLocation)}
-              >
-                <span className="menu-icon">📍</span>
-                <span className="menu-label">Request Location</span>
-              </button>
-            )}
           </div>
         </>
       )}
