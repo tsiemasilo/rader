@@ -48,7 +48,6 @@ function App() {
       </div>
 
       <ControlPanel
-        alerts={alerts}
         closestAlert={closestAlert}
         isRadarMode={isRadarMode}
         onToggleRadar={handleToggleRadar}

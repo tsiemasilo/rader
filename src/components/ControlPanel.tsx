@@ -4,7 +4,6 @@ import { BurgerMenu } from './BurgerMenu';
 import './ControlPanel.css';
 
 interface ControlPanelProps {
-  alerts: ProximityAlert[];
   closestAlert: ProximityAlert | null;
   isRadarMode: boolean;
   onToggleRadar: () => void;
@@ -16,7 +15,6 @@ interface ControlPanelProps {
 }
 
 export function ControlPanel({
-  alerts,
   closestAlert,
   isRadarMode,
   onToggleRadar,
@@ -53,18 +51,6 @@ export function ControlPanel({
             <div className="accuracy-warning">⚠️ {accuracyWarning}</div>
           )}
         </div>
-
-        {alerts.length > 0 && (
-          <div className="alerts-list">
-            <h3>Nearby Threats ({alerts.length})</h3>
-            {alerts.slice(0, 5).map((alert) => (
-              <div key={alert.location.id} className="alert-item">
-                <span className="alert-type">{alert.location.type.replace('_', ' ')}</span>
-                <span className="alert-distance">{formatDistance(alert.distance)}</span>
-              </div>
-            ))}
-          </div>
-        )}
         </div>
       )}
     </>
