@@ -37,7 +37,8 @@ export function ControlPanel({
         onRequestLocation={onRequestLocation}
       />
       
-      <div className="control-panel">
+      {!isRadarMode && (
+        <div className="control-panel">
         <div className="status-bar">
           {locationError ? (
             <div className="error-message">{locationError}</div>
@@ -53,7 +54,7 @@ export function ControlPanel({
           )}
         </div>
 
-        {alerts.length > 0 && !isRadarMode && (
+        {alerts.length > 0 && (
           <div className="alerts-list">
             <h3>Nearby Threats ({alerts.length})</h3>
             {alerts.slice(0, 5).map((alert) => (
@@ -64,7 +65,8 @@ export function ControlPanel({
             ))}
           </div>
         )}
-      </div>
+        </div>
+      )}
     </>
   );
 }

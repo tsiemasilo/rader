@@ -4,6 +4,12 @@
 A responsive web application for detecting police, speed cameras, and roadblocks while driving. Built with React, TypeScript, and Leaflet.js, featuring real-time GPS tracking, proximity alerts, and a radar scanner UI mode.
 
 ## Recent Changes
+- **2025-11-05**: UX improvement - Hide control panel in radar view
+  - **Radar View Enhancement**: Control panel now hidden in radar mode to show full map
+    - Only burger menu remains visible for accessing controls
+    - Provides unobstructed view of radar scanner and background map
+    - Control panel still shows in map view with status and alerts
+
 - **2025-11-05**: Bug fixes - Burger menu click issue and dark mode visibility improvements
   - **Burger Menu Fix**: Increased z-index from 1000 to 1001 to resolve click-through conflict with ControlPanel
   - **Dark Mode Enhancement**: Updated color scheme from pure black to lighter grey tones for better visibility
